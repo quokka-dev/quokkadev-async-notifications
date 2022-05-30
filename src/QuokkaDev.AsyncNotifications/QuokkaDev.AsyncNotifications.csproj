@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+	<PackageId>$(AssemblyName)</PackageId>
+	<Authors>Fabio Cometti</Authors>
+	<Company>QuokkaDev</Company>
+	<Description>A package for async notifications</Description>
+	<PackageProjectUrl>https://github.com/quokka-dev/quokkadev-async-notifications.git</PackageProjectUrl>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageTags>library;c#;Notifications;</PackageTags>
+	<AssemblyVersion>1.0.0</AssemblyVersion>
+	<FileVersion>1.0.0</FileVersion>
+	<Copyright>QuokkaDev © 2022</Copyright>
+	<RepositoryUrl>https://github.com/quokka-dev/quokkadev-async-notifications.git</RepositoryUrl>
+	<Version></Version>
+	<PackageIcon>icon.png</PackageIcon>
+  </PropertyGroup>
+
+    <ItemGroup>
+	    <None Include="..\..\icon.png">
+		    <Pack>True</Pack>
+		    <PackagePath>\</PackagePath>
+	    </None>
+	    <None Include="..\..\README.md">
+		    <Pack>True</Pack>
+		    <PackagePath>\</PackagePath>
+	    </None>
+    </ItemGroup>
+
+
+	<ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+    <PackageReference Include="Roslynator.Analyzers" Version="4.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Scrutor" Version="4.1.0" />
+  </ItemGroup>
+
+
+	<ItemGroup>
+	  <ProjectReference Include="..\QuokkaDev.AsyncNotifications.Abstractions\QuokkaDev.AsyncNotifications.Abstractions.csproj" />
+	</ItemGroup>
+
+</Project>
