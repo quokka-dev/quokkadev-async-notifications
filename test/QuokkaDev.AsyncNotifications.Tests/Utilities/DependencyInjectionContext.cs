@@ -1,8 +1,8 @@
-﻿using QuokkaDev.AsyncNotifications.Abstractions;
-using QuokkaDev.AsyncNotifications.Abstractions.Exceptions;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
+using QuokkaDev.AsyncNotifications.Abstractions;
+using QuokkaDev.AsyncNotifications.Abstractions.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

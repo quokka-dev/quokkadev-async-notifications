@@ -66,7 +66,7 @@ namespace QuokkaDev.AsyncNotifications.Tests.Utilities
         public Task Handle(Notification1 notification, CancellationToken cancellation)
         {
             this.methodCall.Call();
-            throw new NotificationException();            
+            throw new NotificationException();
         }
     }
 

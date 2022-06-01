@@ -1,6 +1,6 @@
-﻿using QuokkaDev.AsyncNotifications.Abstractions;
+﻿using Microsoft.Extensions.DependencyInjection;
+using QuokkaDev.AsyncNotifications.Abstractions;
 using QuokkaDev.AsyncNotifications.Implementations;
-using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace QuokkaDev.AsyncNotifications
