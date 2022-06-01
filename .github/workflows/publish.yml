@@ -91,7 +91,7 @@ jobs:
       - name: Pack QuokkaDev.AsyncNotifications
         run: dotnet pack src/QuokkaDev.AsyncNotifications/QuokkaDev.AsyncNotifications.csproj -c Release /p:Version=${{ steps.calculate_version.outputs.version }} 
       - name: Publish to GitHub package QuokkaDev.AsyncNotifications 
-        run: dotnet nuget push src/QuokkaDev.AsyncNotifications/bin/Release/*.nupkg ${{ secrets.NUGET_TOKEN }} -s https://api.nuget.org/v3/index.json  
+        run: dotnet nuget push src/QuokkaDev.AsyncNotifications/bin/Release/*.nupkg --api-key ${{ secrets.NUGET_TOKEN }} -s https://api.nuget.org/v3/index.json  
 
       - name: Pack QuokkaDev.AsyncNotifications.Abstractions
         run: dotnet pack src/QuokkaDev.AsyncNotifications.Abstractions/QuokkaDev.AsyncNotifications.Abstractions.csproj -c Release /p:Version=${{ steps.calculate_version.outputs.version }} 
