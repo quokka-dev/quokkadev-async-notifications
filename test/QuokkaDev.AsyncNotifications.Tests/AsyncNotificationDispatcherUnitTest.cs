@@ -1,8 +1,8 @@
 using FluentAssertions;
+using Moq;
 using QuokkaDev.AsyncNotifications.Abstractions;
 using QuokkaDev.AsyncNotifications.Abstractions.Exceptions;
 using QuokkaDev.AsyncNotifications.Tests.Utilities;
-using Moq;
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -31,12 +31,10 @@ public class AsyncNotificationDispatcherUnitTest
 
         // Act
 
-        try
-        {
+        try {
             await asyncNotificationDispatcher.DispatchAsync(notification);
         }
-        catch(AggregateException agex)
-        {
+        catch(AggregateException) {
         }
 
         // Assert
@@ -50,7 +48,7 @@ public class AsyncNotificationDispatcherUnitTest
         var notification = new Notification1();
 
         // Act
-        var dispatch = async() => await asyncNotificationDispatcher.DispatchAsync(notification);
+        var dispatch = async () => await asyncNotificationDispatcher.DispatchAsync(notification);
 
         // Assert
         await dispatch.Should().ThrowAsync<NotificationException>();
