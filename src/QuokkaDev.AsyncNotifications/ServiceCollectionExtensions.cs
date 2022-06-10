@@ -29,10 +29,7 @@ namespace QuokkaDev.AsyncNotifications
             services.Scan(selector =>
             {
                 selector.FromAssemblies(assemblies)
-                        .AddClasses(filter =>
-                        {
-                            filter.AssignableTo(typeof(INotificationHandler<>));
-                        })
+                        .AddClasses(filter => filter.AssignableTo(typeof(INotificationHandler<>)))
                         .AsImplementedInterfaces()
                         .WithScopedLifetime();
             });
