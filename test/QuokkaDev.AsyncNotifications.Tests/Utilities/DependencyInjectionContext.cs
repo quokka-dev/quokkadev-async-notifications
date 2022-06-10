@@ -1,14 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
-using QuokkaDev.AsyncNotifications.Abstractions;
-using QuokkaDev.AsyncNotifications.Abstractions.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace QuokkaDev.AsyncNotifications.Tests.Utilities
 {
@@ -21,10 +16,17 @@ namespace QuokkaDev.AsyncNotifications.Tests.Utilities
         private readonly IList<Mock> mocks;
         private ServiceProvider? serviceProvider;
 
+        public DependencyInjectionContext(Assembly assembly)
+        {
+            services = new ServiceCollection();
+            services.AddAsyncNotifications(assembly);
+            mocks = new List<Mock>();
+        }
+
         public DependencyInjectionContext()
         {
             services = new ServiceCollection();
-            services.AddAsyncNotifications(typeof(DependencyInjectionContext).Assembly);
+            services.AddAsyncNotifications();
             mocks = new List<Mock>();
         }
 

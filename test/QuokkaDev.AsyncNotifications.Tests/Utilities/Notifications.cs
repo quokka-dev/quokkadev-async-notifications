@@ -7,6 +7,7 @@ namespace QuokkaDev.AsyncNotifications.Tests.Utilities
 {
     public class Notification1
     {
+        public bool ThrowException { get; set; }
     }
 
     public class Notification2
@@ -62,7 +63,14 @@ namespace QuokkaDev.AsyncNotifications.Tests.Utilities
         public Task Handle(Notification1 notification, CancellationToken cancellation)
         {
             methodCall.Call();
-            throw new NotificationException();
+            if(notification.ThrowException)
+            {
+                throw new NotificationException();
+            }
+            else
+            {
+                return Task.CompletedTask;
+            }
         }
     }
 
