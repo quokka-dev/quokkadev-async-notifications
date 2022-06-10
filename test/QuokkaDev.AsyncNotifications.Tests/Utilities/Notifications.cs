@@ -1,9 +1,5 @@
 ﻿using QuokkaDev.AsyncNotifications.Abstractions;
 using QuokkaDev.AsyncNotifications.Abstractions.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,7 +29,7 @@ namespace QuokkaDev.AsyncNotifications.Tests.Utilities
 
         public Task Handle(Notification1 notification, CancellationToken cancellation)
         {
-            this.methodCall.Call();
+            methodCall.Call();
             return Task.CompletedTask;
         }
     }
@@ -49,7 +45,7 @@ namespace QuokkaDev.AsyncNotifications.Tests.Utilities
 
         public Task Handle(Notification1 notification, CancellationToken cancellation)
         {
-            this.methodCall.Call();
+            methodCall.Call();
             return Task.CompletedTask;
         }
     }
@@ -65,7 +61,7 @@ namespace QuokkaDev.AsyncNotifications.Tests.Utilities
 
         public Task Handle(Notification1 notification, CancellationToken cancellation)
         {
-            this.methodCall.Call();
+            methodCall.Call();
             throw new NotificationException();
         }
     }
@@ -81,7 +77,7 @@ namespace QuokkaDev.AsyncNotifications.Tests.Utilities
 
         public Task Handle(Notification2 notification, CancellationToken cancellation)
         {
-            this.methodCall.Call();
+            methodCall.Call();
             return Task.CompletedTask;
         }
     }

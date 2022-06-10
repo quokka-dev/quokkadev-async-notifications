@@ -31,10 +31,13 @@ public class AsyncNotificationDispatcherUnitTest
 
         // Act
 
-        try {
+        try
+        {
             await asyncNotificationDispatcher.DispatchAsync(notification);
         }
-        catch(AggregateException) {
+        catch(AggregateException)
+        {
+            // Ignore the error
         }
 
         // Assert
