@@ -1,10 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using QuokkaDev.AsyncNotifications.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QuokkaDev.AsyncNotifications.Implementations
 {
@@ -24,7 +19,8 @@ namespace QuokkaDev.AsyncNotifications.Implementations
             var tasks = handlers.Select(handler => BufferCall(handler, notification, cancellation));
             await Task.WhenAll(tasks);
 
-            if(this.aggregateException.Any()) {
+            if(this.aggregateException.Count > 0)
+            {
                 throw new AggregateException(this.aggregateException);
             }
         }
@@ -36,10 +32,12 @@ namespace QuokkaDev.AsyncNotifications.Implementations
 
         private async Task BufferCall<T>(INotificationHandler<T> handler, T notification, CancellationToken cancellation)
         {
-            try {
+            try
+            {
                 await handler.Handle(notification, cancellation);
             }
-            catch(Exception e) {
+            catch(Exception e)
+            {
                 this.aggregateException.Add(e);
             }
         }

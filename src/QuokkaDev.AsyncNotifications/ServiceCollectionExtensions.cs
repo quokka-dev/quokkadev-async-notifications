@@ -19,17 +19,17 @@ namespace QuokkaDev.AsyncNotifications
         /// <returns>The service collection, so you can chain multiple methods</returns>
         public static IServiceCollection AddAsyncNotifications(this IServiceCollection services, params Assembly[] assemblies)
         {
-            if(assemblies is null || assemblies.Length == 0) {
+            if(assemblies.Length == 0)
+            {
                 assemblies = new Assembly[] { Assembly.GetCallingAssembly() };
             }
 
             services.AddScoped<IAsyncNotificationDispatcher, AsyncNotificationDispatcher>();
 
-            services.Scan(selector => {
+            services.Scan(selector =>
+            {
                 selector.FromAssemblies(assemblies)
-                        .AddClasses(filter => {
-                            filter.AssignableTo(typeof(INotificationHandler<>));
-                        })
+                        .AddClasses(filter => filter.AssignableTo(typeof(INotificationHandler<>)))
                         .AsImplementedInterfaces()
                         .WithScopedLifetime();
             });

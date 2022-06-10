@@ -13,6 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuokkaDev.AsyncNotification
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuokkaDev.AsyncNotifications.Abstractions", "src\QuokkaDev.AsyncNotifications.Abstractions\QuokkaDev.AsyncNotifications.Abstractions.csproj", "{5D18113D-6B7A-4950-A75D-69E63F75D41E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{443927EF-2040-4EB6-9DFB-0566180A19F6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
