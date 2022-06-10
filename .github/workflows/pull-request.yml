@@ -67,7 +67,6 @@ jobs:
           dotnet tool install dotnet-sonarscanner --tool-path .sonar/scanner
  
       # end SonarCloud configuration
-
  
       - name: Install dependencies
         run: dotnet restore
