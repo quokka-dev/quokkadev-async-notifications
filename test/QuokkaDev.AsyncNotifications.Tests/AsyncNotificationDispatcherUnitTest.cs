@@ -3,6 +3,7 @@ using Moq;
 using QuokkaDev.AsyncNotifications.Abstractions;
 using QuokkaDev.AsyncNotifications.Abstractions.Exceptions;
 using QuokkaDev.AsyncNotifications.Tests.Utilities;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -63,5 +64,25 @@ public class AsyncNotificationDispatcherUnitTest
 
         // Assert
         localMethodCallMock.Verify(caller => caller.Call(), Times.Exactly(3));
+    }
+
+    [Fact]
+    public async Task Exactly_3_Handlers_Should_Be_Invoked_For_Concrete_Types()
+    {
+        // Arrange
+        INotification notification = new Notification1();
+
+        // Act
+
+        try
+        {
+            await asyncNotificationDispatcher.DispatchAsync(notification);
+        }
+        catch(AggregateException)
+        {
+        }
+
+        // Assert
+        methodCallMock.Verify(caller => caller.Call(), Times.Exactly(3));
     }
 }

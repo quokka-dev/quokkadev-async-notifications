@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using QuokkaDev.AsyncNotifications.Abstractions;
+﻿using QuokkaDev.AsyncNotifications.Abstractions;
+using System.Collections.Concurrent;
 
 namespace QuokkaDev.AsyncNotifications.Implementations
 {
     internal class AsyncNotificationDispatcher : IAsyncNotificationDispatcher
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly List<Exception> aggregateException = new List<Exception>();
+        private static ConcurrentDictionary<Type, AbstractHandlerExecutor> executorDictionary = new();
 
         public AsyncNotificationDispatcher(IServiceProvider serviceProvider)
         {
@@ -15,31 +15,22 @@ namespace QuokkaDev.AsyncNotifications.Implementations
 
         public async Task DispatchAsync<T>(T notification, CancellationToken cancellation)
         {
-            var handlers = serviceProvider.GetServices<INotificationHandler<T>>();
-            var tasks = handlers.Select(handler => BufferCall(handler, notification, cancellation));
-            await Task.WhenAll(tasks);
-
-            if(this.aggregateException.Count > 0)
+            Type? notificationType = notification?.GetType();
+            if(notificationType != null)
             {
-                throw new AggregateException(this.aggregateException);
+                var executor = executorDictionary.GetOrAdd(notificationType, static type =>
+                {
+                    var concreteType = typeof(HandlerExecutor<>).MakeGenericType(type);
+                    return (AbstractHandlerExecutor)Activator.CreateInstance(concreteType)!;
+                });
+
+                await executor.HandleAsync(notification!, serviceProvider, cancellation);
             }
         }
 
         public Task DispatchAsync<T>(T notification)
         {
             return DispatchAsync<T>(notification, CancellationToken.None);
-        }
-
-        private async Task BufferCall<T>(INotificationHandler<T> handler, T notification, CancellationToken cancellation)
-        {
-            try
-            {
-                await handler.Handle(notification, cancellation);
-            }
-            catch(Exception e)
-            {
-                this.aggregateException.Add(e);
-            }
         }
     }
 }
