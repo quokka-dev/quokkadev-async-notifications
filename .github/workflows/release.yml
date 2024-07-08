@@ -19,10 +19,10 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v3 
+        uses: actions/checkout@v3
         with:
-          fetch-depth: 0              
-      
+          fetch-depth: 0
+
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v2
         with:
@@ -32,10 +32,10 @@ jobs:
 
       - uses: paulhatch/semantic-version@v4.0.2
         name: Calculate version
-        with:  
-          tag_prefix: "v"          
-          major_pattern: "(MAJOR)"          
-          minor_pattern: "(MINOR)"          
+        with:
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
           format: "${major}.${minor}.${patch}-rc${increment}"
         id: calculate_version
 
@@ -48,6 +48,11 @@ jobs:
             ${{ runner.os }}-nuget-
 
       # SonarCloud configuration
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17' # Set up Java 17, because SonarCloud requires it
+          distribution: 'adopt'
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
@@ -55,7 +60,7 @@ jobs:
           path: ~/sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-      
+
       - name: Cache SonarCloud scanner
         id: cache-sonar-scanner
         uses: actions/cache@v1
@@ -63,56 +68,56 @@ jobs:
           path: ./.sonar/scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
-      
+
       - name: Install SonarCloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'        
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         run: |
-          mkdir -p .sonar/scanner                
+          mkdir -p .sonar/scanner
           dotnet tool install dotnet-sonarscanner --tool-path .sonar/scanner
- 
+
       # end SonarCloud configuration
 
       - name: Install dependencies
-        run: dotnet restore      
-      
-      - name: Run format      
+        run: dotnet restore
+
+      - name: Run format
         run: |
           dotnet format --verify-no-changes
-      
-      - name: Run tests      
+
+      - name: Run tests
         run: dotnet test --no-restore --verbosity normal --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage" --results-directory coverage -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover,cobertura DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByFile=**/QuokkaDev.AsyncNotifications.Abstractions/**/*.cs
-      
+
       - name: Generate Unit Test Report
         uses: zyborg/dotnet-tests-report@v1
-        with:          
+        with:
           report_name: QuokkaDev.AsyncNotifications Test Report
           report_title: QuokkaDev.AsyncNotifications Test Report
           github_token: ${{ secrets.GITHUB_TOKEN }}
           set_check_status_from_test_outcome: true
-    
+
       - name: Copy Coverage To Predictable Location
         run: |
           cp coverage/*/coverage.cobertura.xml coverage/coverage.cobertura.xml
           cp coverage/*/coverage.opencover.xml coverage/coverage.opencover.xml
-        
+
       - name: Generate QuokkaDev.AsyncNotifications Code Coverage Summary Report
-        uses: irongut/CodeCoverageSummary@v1.0.2      
+        uses: irongut/CodeCoverageSummary@v1.0.2
         with:
           filename: coverage/coverage.cobertura.xml
           badge: true
           format: 'markdown'
           output: 'both'
-          
+
       - name: Publish QuokkaDev.AsyncNotifications Code Coverage Summary Report
         uses: LouisBrunner/checks-action@v1.2.0
         if: always()
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Code coverage
-          conclusion: ${{ job.status }}          
-          output: | 
+          conclusion: ${{ job.status }}
+          output: |
             {"summary":"Code Coverage"}
-          output_text_description_file: code-coverage-results.md      
+          output_text_description_file: code-coverage-results.md
 
       - name: Build and analyze
         env:
@@ -123,20 +128,20 @@ jobs:
           dotnet build --configuration Release --no-restore /p:Version=${{ steps.calculate_version.outputs.version }}
           .sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
-      # Publish  
+      # Publish
 
       # NuGet Package on GitHub Packages
-      
+
       - name: Pack QuokkaDev.AsyncNotifications
         if: contains(github.event.head_commit.message, '(rc)')
-        run: dotnet pack src/QuokkaDev.AsyncNotifications/QuokkaDev.AsyncNotifications.csproj -c Release /p:Version=${{ steps.calculate_version.outputs.version }} 
-      - name: Publish to GitHub package QuokkaDev.AsyncNotifications 
+        run: dotnet pack src/QuokkaDev.AsyncNotifications/QuokkaDev.AsyncNotifications.csproj -c Release /p:Version=${{ steps.calculate_version.outputs.version }}
+      - name: Publish to GitHub package QuokkaDev.AsyncNotifications
         if: contains(github.event.head_commit.message, '(rc)')
-        run: dotnet nuget push src/QuokkaDev.AsyncNotifications/bin/Release/*.nupkg --api-key ${{ secrets.NUGET_TOKEN }} -s https://api.nuget.org/v3/index.json  
+        run: dotnet nuget push src/QuokkaDev.AsyncNotifications/bin/Release/*.nupkg --api-key ${{ secrets.NUGET_TOKEN }} -s https://api.nuget.org/v3/index.json
 
       - name: Pack QuokkaDev.AsyncNotifications.Abstractions
         if: contains(github.event.head_commit.message, '(rc)')
-        run: dotnet pack src/QuokkaDev.AsyncNotifications.Abstractions/QuokkaDev.AsyncNotifications.Abstractions.csproj -c Release /p:Version=${{ steps.calculate_version.outputs.version }} 
-      - name: Publish to GitHub package QuokkaDev.AsyncNotifications.Abstractions 
+        run: dotnet pack src/QuokkaDev.AsyncNotifications.Abstractions/QuokkaDev.AsyncNotifications.Abstractions.csproj -c Release /p:Version=${{ steps.calculate_version.outputs.version }}
+      - name: Publish to GitHub package QuokkaDev.AsyncNotifications.Abstractions
         if: contains(github.event.head_commit.message, '(rc)')
-        run: dotnet nuget push src/QuokkaDev.AsyncNotifications.Abstractions/bin/Release/*.nupkg --api-key ${{ secrets.NUGET_TOKEN }} -s https://api.nuget.org/v3/index.json --skip-duplicate    
+        run: dotnet nuget push src/QuokkaDev.AsyncNotifications.Abstractions/bin/Release/*.nupkg --api-key ${{ secrets.NUGET_TOKEN }} -s https://api.nuget.org/v3/index.json --skip-duplicate
