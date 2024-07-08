@@ -5,12 +5,17 @@ using System.Threading.Tasks;
 
 namespace QuokkaDev.AsyncNotifications.Tests.Utilities
 {
-    public class Notification1
+    public interface INotification
+    {
+
+    }
+
+    public class Notification1 : INotification
     {
         public bool ThrowException { get; set; }
     }
 
-    public class Notification2
+    public class Notification2 : INotification
     {
     }
 
