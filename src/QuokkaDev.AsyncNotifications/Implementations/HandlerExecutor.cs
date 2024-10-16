@@ -17,7 +17,11 @@ namespace QuokkaDev.AsyncNotifications.Implementations
 
             var handlers = serviceProvider.GetServices<INotificationHandler<T>>();
             var tasks = handlers.Select(handler => BufferCall<T>(handler, (T)notification, aggregateException, cancellation));
-            await Task.WhenAll(tasks);
+
+            foreach(var task in tasks)
+            {
+                await task;
+            }
 
             if(aggregateException.Any())
             {
